@@ -15,7 +15,8 @@ import json
 import numpy as np
 from tqdm import tqdm
 
-from llm_judge.common import (
+import fastchat
+from fastchat.llm_judge.common import (
     load_questions,
     load_model_answers,
     load_judge_prompts,
@@ -28,6 +29,10 @@ from llm_judge.common import (
     MatchSingle,
     NEED_REF_CATS,
 )
+
+from llm_judge.common import chat_compeletion_openai
+# fix old api
+fastchat.llm_judge.common.chat_compeletion_openai = chat_compeletion_openai
 
 
 def make_match(
@@ -246,17 +251,13 @@ if __name__ == "__main__":
     if args.mode == "single":
         judges = make_judge_single(args.judge_model, judge_prompts)
         play_a_match_func = play_a_match_single
-        output_file = (
-            f"llm_judge/data/{args.bench_name}/model_judgment/{args.judge_model}_single.jsonl"
-        )
+        output_file = f"llm_judge/data/{args.bench_name}/model_judgment/{args.judge_model}_single.jsonl"
         make_match_func = make_match_single
         baseline_model = None
     else:
         judges = make_judge_pairwise(args.judge_model, judge_prompts)
         play_a_match_func = play_a_match_pair
-        output_file = (
-            f"llm_judge/data/{args.bench_name}/model_judgment/{args.judge_model}_pair.jsonl"
-        )
+        output_file = f"llm_judge/data/{args.bench_name}/model_judgment/{args.judge_model}_pair.jsonl"
         if args.mode == "pairwise-all":
             make_match_func = make_match_all_pairs
             baseline_model = None

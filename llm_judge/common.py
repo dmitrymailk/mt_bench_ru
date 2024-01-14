@@ -399,22 +399,22 @@ def play_a_match_pair(match: MatchPair, output_file: str):
 
 def chat_compeletion_openai(model, conv, temperature, max_tokens):
     output = API_ERROR_OUTPUT
+    client = openai.OpenAI()
     for _ in range(API_MAX_RETRY):
         try:
             messages = conv.to_openai_api_messages()
-            # response = openai.ChatCompletion.create(
-            response = openai.Client().chat.completions.create(
+            response = client.chat.completions.create(
                 model=model,
                 messages=messages,
                 n=1,
                 temperature=temperature,
-                # max_tokens=max_tokens,
+                max_tokens=max_tokens,
             )
-
+            # print(response)
             output = response.choices[0].message.content
             break
-        # except openai.error.OpenAIError as e:
-        except Exception as e:
+        except openai.APIError as e:
+        # except:
             print(type(e), e)
             time.sleep(API_RETRY_SLEEP)
 
