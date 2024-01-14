@@ -9,7 +9,7 @@ import re
 
 import gradio as gr
 
-from fastchat.llm_judge.common import (
+from llm_judge.common import (
     load_questions,
     load_model_answers,
     load_single_model_judgments,
@@ -84,7 +84,10 @@ def display_pairwise_answer(
     return chat_mds + [explanation] + [explanation_turn2]
 
 
-def display_single_answer(question_selector, model_selector1, request: gr.Request):
+def display_single_answer(
+    question_selector,
+    model_selector1,
+):
     """
     returns like that
     [
@@ -222,11 +225,15 @@ def build_pairwise_browser_tab():
     with gr.Row():
         with gr.Column(scale=1, min_width=200):
             category_selector = gr.Dropdown(
-                choices=category_selector_choices, label="Category", container=False
+                choices=category_selector_choices,
+                label="Category",
+                # container=False,
             )
         with gr.Column(scale=100):
             question_selector = gr.Dropdown(
-                choices=question_selector_choices, label="Question", container=False
+                choices=question_selector_choices,
+                label="Question",
+                # container=False,
             )
 
     model_selectors = [None] * num_sides
@@ -241,7 +248,7 @@ def build_pairwise_browser_tab():
                     choices=models,
                     value=value,
                     label=f"Model {side_names[i]}",
-                    container=False,
+                    # container=False,
                 )
 
     # Conversation
@@ -296,11 +303,15 @@ def build_side_by_side_browser_tab():
     with gr.Row():
         with gr.Column(scale=1, min_width=200):
             category_selector = gr.Dropdown(
-                choices=category_selector_choices, label="Category", container=False
+                choices=category_selector_choices,
+                label="Category",
+                # container=False,
             )
         with gr.Column(scale=100):
             question_selector = gr.Dropdown(
-                choices=question_selector_choices, label="Question", container=False
+                choices=question_selector_choices,
+                label="Question",
+                # container=False,
             )
 
     num_sides = 2
@@ -347,7 +358,6 @@ def display_side_by_side_answer(
     question_selector,
     model_selector1,
     model_selector2,
-    request,
 ):
     """
     expect return like this
@@ -376,12 +386,10 @@ def display_side_by_side_answer(
     model_solution_1 = display_single_answer(
         question_selector=question_selector,
         model_selector1=model_selector1,
-        request=request,
     )
     model_solution_2 = display_single_answer(
         question_selector=question_selector,
         model_selector1=model_selector2,
-        request=request,
     )
     # print("model_solution_2", model_solution_2)
     result = [
@@ -436,11 +444,13 @@ def build_single_answer_browser_tab():
     with gr.Row():
         with gr.Column(scale=1, min_width=200):
             category_selector = gr.Dropdown(
-                choices=category_selector_choices, label="Category", container=False
+                choices=category_selector_choices,
+                label="Category",
             )
         with gr.Column(scale=100):
             question_selector = gr.Dropdown(
-                choices=question_selector_choices, label="Question", container=False
+                choices=question_selector_choices,
+                label="Question",
             )
 
     model_selectors = [None] * num_sides
@@ -451,7 +461,7 @@ def build_single_answer_browser_tab():
                     choices=models,
                     value=models[i] if len(models) > i else "",
                     label=f"Model {side_names[i]}",
-                    container=False,
+                    # container=False,
                 )
 
     # Conversation
@@ -520,12 +530,7 @@ def build_demo():
         theme=gr.themes.Base(text_size=gr.themes.sizes.text_lg),
         css=block_css,
     ) as demo:
-        gr.Markdown(
-            """
-# MT-Bench Browserr
-The code to generate answers and judgments is at [fastchat.llm_judge](https://github.com/lm-sys/FastChat/tree/main/fastchat/llm_judge).
-"""
-        )
+        gr.Markdown("""# MT_BENCH_RU""")
         with gr.Tab("Single Answer Grading"):
             (category_selector,) = build_single_answer_browser_tab()
         # with gr.Tab("Pairwise Comparison"):
@@ -558,13 +563,13 @@ if __name__ == "__main__":
 
     # args = ArgsDebug()
 
-    question_file = f"data/{args.bench_name}/{args.question_file}.jsonl"
-    answer_dir = f"data/{args.bench_name}/model_answer"
+    question_file = f"llm_judge/data/{args.bench_name}/{args.question_file}.jsonl"
+    answer_dir = f"llm_judge/data/{args.bench_name}/model_answer"
     pairwise_model_judgment_file = (
-        f"data/{args.bench_name}/model_judgment/gpt-4_pair.jsonl"
+        f"llm_judge/data/{args.bench_name}/model_judgment/gpt-4_pair.jsonl"
     )
     single_model_judgment_file = (
-        f"data/{args.bench_name}/model_judgment/gpt-4_single.jsonl"
+        f"llm_judge/data/{args.bench_name}/model_judgment/gpt-4_single.jsonl"
     )
 
     # Load questions

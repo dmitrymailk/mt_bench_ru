@@ -12,14 +12,14 @@ import concurrent.futures
 import shortuuid
 import tqdm
 
-from fastchat.llm_judge.common import (
+from llm_judge.common import (
     load_questions,
     temperature_config,
     chat_compeletion_openai,
     chat_compeletion_anthropic,
     chat_compeletion_palm,
 )
-from fastchat.llm_judge.gen_model_answer import reorg_answer_file
+from llm_judge.gen_model_answer import reorg_answer_file
 from fastchat.model.model_adapter import get_conversation_template
 
 
@@ -113,13 +113,15 @@ if __name__ == "__main__":
     )
     args = parser.parse_args()
 
-    question_file = f"data/{args.bench_name}/question.jsonl"
+    question_file = f"llm_judge/data/{args.bench_name}/question.jsonl"
     questions = load_questions(question_file, args.question_begin, args.question_end)
 
     if args.answer_file:
         answer_file = args.answer_file
     else:
-        answer_file = f"data/{args.bench_name}/model_answer/{args.model}.jsonl"
+        answer_file = (
+            f"llm_judge/data/{args.bench_name}/model_answer/{args.model}.jsonl"
+        )
     print(f"Output to {answer_file}")
 
     with concurrent.futures.ThreadPoolExecutor(max_workers=args.parallel) as executor:

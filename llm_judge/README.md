@@ -1,22 +1,5 @@
-# MT-BENCH RU
 
-#### Запустить оценку файла который лежит в `llm_judge/data/mt_bench/model_answer` с именем `saiga_7b_v2_ru.json` в режиме когда оценивается только одна модель
-```
-python gen_judgment.py --model-list saiga_7b_v2_ru --mode single --judge-file data/judge_prompts_ru.jsonl --question-file question_ru
-```
 
-#### Показать скоры для русской версии в браузере
-```
-python3 qa_browser.py  --share --question-file question_ru
-```
-#### Показать скоры для английской версии в браузере
-```
-python3 qa_browser.py  --share --question-file question
-```
-#### Показать все скоры просто в консоли
-```
-python show_result.py
-```
 --- 
 ---
 

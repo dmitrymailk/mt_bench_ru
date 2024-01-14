@@ -12,7 +12,9 @@
 		}
 	},
 	"forwardPorts": [
-		8080
+		8080,
+		7861,
+		7860
 	],
 	"dockerComposeFile": "docker-compose.yml",
 	"service": "server",

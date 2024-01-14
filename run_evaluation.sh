@@ -1,2 +1,0 @@
-export CUDA_VISIBLE_DEVICES=0
-python mt_bench_evaluation.py

@@ -9,7 +9,7 @@ import pandas as pd
 def display_result_single(args):
     if args.input_file is None:
         input_file = (
-            f"data/{args.bench_name}/model_judgment/{args.judge_model}_single.jsonl"
+            f"llm_judge/data/{args.bench_name}/model_judgment/{args.judge_model}_single.jsonl"
         )
     else:
         input_file = args.input_file
@@ -38,7 +38,7 @@ def display_result_single(args):
 def display_result_pairwise(args):
     if args.input_file is None:
         input_file = (
-            f"data/{args.bench_name}/model_judgment/{args.judge_model}_pair.jsonl"
+            f"llm_judge/data/{args.bench_name}/model_judgment/{args.judge_model}_pair.jsonl"
         )
     else:
         input_file = args.input_file

@@ -158,7 +158,7 @@ def run_judge_single(question, answer, judge, ref_answer, multi_turn=False):
     conv.append_message(conv.roles[1], None)
 
     if model in ["gpt-3.5-turbo", "gpt-4"]:
-        judgment = chat_compeletion_openai(model, conv, temperature=0, max_tokens=2048)
+        judgment = chat_compeletion_openai(model, conv, temperature=0, max_tokens=8192)
     elif model in ["claude-v1", "claude-instant-v1"]:
         judgment = chat_compeletion_anthropic(
             model, conv, temperature=0, max_tokens=1024
@@ -221,7 +221,7 @@ def play_a_match_single(match: MatchPair, output_file: str):
     if output_file:
         os.makedirs(os.path.dirname(output_file), exist_ok=True)
         with open(output_file, "a") as fout:
-            fout.write(json.dumps(result) + "\n")
+            fout.write(json.dumps(result, ensure_ascii=False) + "\n")
 
     return result
 
@@ -402,16 +402,19 @@ def chat_compeletion_openai(model, conv, temperature, max_tokens):
     for _ in range(API_MAX_RETRY):
         try:
             messages = conv.to_openai_api_messages()
-            response = openai.ChatCompletion.create(
+            # response = openai.ChatCompletion.create(
+            response = openai.Client().chat.completions.create(
                 model=model,
                 messages=messages,
                 n=1,
                 temperature=temperature,
-                max_tokens=max_tokens,
+                # max_tokens=max_tokens,
             )
-            output = response["choices"][0]["message"]["content"]
+
+            output = response.choices[0].message.content
             break
-        except openai.error.OpenAIError as e:
+        # except openai.error.OpenAIError as e:
+        except Exception as e:
             print(type(e), e)
             time.sleep(API_RETRY_SLEEP)
 
