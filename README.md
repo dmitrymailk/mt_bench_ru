@@ -24,14 +24,34 @@
 
 
 ## Как пользоваться?
-1. Создать 2 файла в корне проекта. 
+Для воспроизводимости я создал докерфайл и добавил .devcontainer.json. Это такая технология, которая позволяет [разрабатывать изолировано в докер контейнере](https://code.visualstudio.com/docs/devcontainers/containers). Ну или можете просто установить все необходимые пакеры самостоятельно, как вы любите.
+Во время первого запуска ноутбука могут возникнуть проблемы с conda. Решение:
+```bash
+sudo su
+conda install -n base ipykernel --update-deps -y
+```
+
+### 1. Создать 2 файла в корне проекта. 
 - gpt_token - переменная среды OPENAI_API_KEY
 - openai_base_url - переменная среды OPENAI_BASE_URL (необходима для обхода блокировки по IP, default https://api.openai.com/v1)
 
-2. Запустить оценку файла который лежит в `llm_judge/data/mt_bench/model_answer` с именем `EXAMPLE_MODEL.json` в режиме когда оценивается только одна модель. Необходимо поменять на ваш файл.
+### 2. Сгенерировать ответы модели. Пример генерации можно найти в скрипте [mt_bench_generation.py](./mt_bench_generation.py). Тестовую генерацию можно запустить при помощи команд:
+```bash
+python mt_bench_generation.py
+```
+или если у вас несколько видеокарт 
+```bash
+bash generate_eval_file.sh 
+```
+
+### 3. Запустить оценку файла который лежит в `llm_judge/data/mt_bench/model_answer` с именем `EXAMPLE_MODEL.json` в режиме когда оценивается только одна модель. Необходимо поменять на ваш файл.
 
 ```bash
 python -m llm_judge.gen_judgment --model-list EXAMPLE_MODEL --mode single --judge-file llm_judge/data/judge_prompts_ru.jsonl --question-file question_ru
+```
+или
+```bash
+bash run_gen_judgment.sh 
 ```
 ```console
 Stats:
@@ -49,9 +69,13 @@ Stats:
 }
 Press Enter to confirm...
 ```
-3. Показываем результат оценок в консоли для каждого turn
+### 4. Показываем результат оценок в консоли для каждого turn
 ```bash
 python -m llm_judge.show_result
+```
+или
+```bash
+bash show_results.sh 
 ```
 ```console
 Mode: single
@@ -106,9 +130,13 @@ mt_bench_ru_gigasaiga_13b               3.231250
 mt_bench_ru_xglm_4.5B_lora_our_dataset  2.187500
 ```
 
-4. Открываем просмотр в браузере отдельных ответов. Есть 2 режима. Single и side by side.
+#### 5. Открываем просмотр в браузере отдельных ответов. Есть 2 режима. Single и side by side.
 ```bash
 python -m llm_judge.qa_browser  --share --question-file question_ru
+```
+или
+```bash
+bash run_gradio.sh 
 ```
 
 ### Single 
@@ -116,3 +144,8 @@ python -m llm_judge.qa_browser  --share --question-file question_ru
 ### Side by side
 ![](./example.jpg)
 ![](./example_2.jpg)
+
+### 6. Визуализация результата. Если хочется красивых картинок, для этого можно воспользоваться [llm_judge/noteboooks/mt_bench_radar.ipynb](llm_judge/noteboooks/mt_bench_radar.ipynb). В нем можно получить подобные интерактивные картинки.
+![](./vizualization.png)
+
+### 7. Если хочется удалить некоторые модели из оценки, для этого есть следующий файл [llm_judge/clean_judgment.py](llm_judge/clean_judgment.py). 

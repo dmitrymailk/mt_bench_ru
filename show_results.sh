@@ -1,0 +1,1 @@
+python -m llm_judge.show_result
