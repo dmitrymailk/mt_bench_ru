@@ -39,10 +39,6 @@ conda install -n base ipykernel --update-deps -y
 ```bash
 python mt_bench_generation.py
 ```
-или если у вас несколько видеокарт 
-```bash
-bash generate_eval_file.sh 
-```
 
 ### 3. Запустить оценку файла который лежит в `llm_judge/data/mt_bench/model_answer` с именем `EXAMPLE_MODEL.json` в режиме когда оценивается только одна модель. Необходимо поменять на ваш файл.
 
