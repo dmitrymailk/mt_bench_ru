@@ -1,2 +1,2 @@
-export CUDA_VISIBLE_DEVICES=1
+export CUDA_VISIBLE_DEVICES=2
 python mt_bench_generation.py

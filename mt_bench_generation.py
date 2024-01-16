@@ -5,8 +5,8 @@ from tqdm import tqdm
 
 from transformers import AutoModelForCausalLM, AutoTokenizer, GenerationConfig
 import torch
-
-
+import time
+import shortuuid
 from datasets import load_dataset
 
 
@@ -53,6 +53,7 @@ def generate_orca_ru(
 def evaluate_mt_bench_ru(
     weights_path,
     output_save_path,
+    model_name,
 ):
     dataset = load_dataset("dim/mt_bench_ru")
     dataset = dataset["train"]
@@ -85,7 +86,7 @@ def evaluate_mt_bench_ru(
     for i in tqdm(range(len(dataset))):
         item = dataset[i]
         conversation = []
-        dataset[i]["replies"] = []
+        replies = []
         for turn in item["turns_ru"]:
             conversation.append(turn)
             print("USER: ", turn)
@@ -97,29 +98,36 @@ def evaluate_mt_bench_ru(
             )
             print("BOT: ", bot_output)
             conversation.append(bot_output)
-            dataset[i]["replies"].append(bot_output)
             print()
             print("==============================")
             print()
-        #     break
-        # break
-    with open(
-        output_save_path,
-        "w",
-        encoding="utf-8",
-    ) as outfile:
-        json.dump(
-            dataset,
-            outfile,
-            ensure_ascii=False,
-        )
+
+        with open(output_save_path, "a") as f:
+            json.dump(
+                {
+                    "question_id": item["question_id"],
+                    "answer_id": shortuuid.uuid(),
+                    "model_id": model_name,
+                    "choices": [
+                        {
+                            "index": 0,
+                            "turns": replies,
+                        }
+                    ],
+                    "tstamp": time.time(),
+                },
+                f,
+                ensure_ascii=False,
+            )
+            f.write("\n")
 
 
 if __name__ == "__main__":
     weights_path = "dim/mistral-open-orca-ru-4600-step"
-    model_name = "EXAMPLE_MODEL.json"
+    model_name = "EXAMPLE_MODEL.jsonl"
     output_save_path = f"llm_judge/data/mt_bench/model_answer/{model_name}"
     evaluate_mt_bench_ru(
         weights_path=weights_path,
         output_save_path=output_save_path,
+        model_name=model_name,
     )
