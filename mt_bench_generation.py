@@ -96,6 +96,7 @@ def evaluate_mt_bench_ru(
                 generation_config=generation_config,
                 instructions=conversation,
             )
+            replies.append(bot_output)
             print("BOT: ", bot_output)
             conversation.append(bot_output)
             print()
@@ -124,8 +125,8 @@ def evaluate_mt_bench_ru(
 
 if __name__ == "__main__":
     weights_path = "dim/mistral-open-orca-ru-4600-step"
-    model_name = "EXAMPLE_MODEL.jsonl"
-    output_save_path = f"llm_judge/data/mt_bench/model_answer/{model_name}"
+    model_name = "EXAMPLE_MODEL_test"
+    output_save_path = f"llm_judge/data/mt_bench/model_answer/{model_name}.jsonl"
     evaluate_mt_bench_ru(
         weights_path=weights_path,
         output_save_path=output_save_path,
